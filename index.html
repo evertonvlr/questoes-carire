@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Preparatório Aleatório - Município de Cariré</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .quiz-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 2rem;
+        }
+        .option-label {
+            display: block;
+            padding: 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .option-label:hover {
+            background-color: #f9fafb;
+            border-color: #0284c7;
+        }
+        input[type="radio"]:checked + .option-label {
+            background-color: #e0f2fe;
+            border-color: #0284c7;
+            font-weight: 500;
+        }
+        .btn-primary {
+            background-color: #0ea5e9;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        .btn-primary:hover {
+            background-color: #0284c7;
+        }
+        .review-question.correct {
+            background-color: #dcfce7;
+            border-left: 4px solid #22c55e;
+        }
+        .review-question.incorrect {
+            background-color: #fee2e2;
+            border-left: 4px solid #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <div id="quiz-app" class="quiz-container">
+        <div id="start-screen">
+            <h1 class="text-2xl font-bold text-center text-gray-800 mb-2">Quiz Preparatório: Município de Cariré</h1>
+            <p class="text-center text-gray-600 mb-6">Teste seus conhecimentos com 100 questões aleatórias no estilo da banca Consulpam.</p>
+            <div class="text-center">
+                <button id="start-btn" class="btn-primary">Iniciar Quiz</button>
+            </div>
+        </div>
+
+        <div id="quiz-screen" class="hidden">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold text-gray-800">Questão <span id="question-number"></span> de 100</h2>
+                <div id="progress-bar" class="w-1/2 bg-gray-200 rounded-full h-2.5">
+                    <div id="progress" class="bg-sky-600 h-2.5 rounded-full" style="width: 0%"></div>
+                </div>
+            </div>
+            <p id="question-text" class="text-lg text-gray-700 mb-6 font-medium"></p>
+            <div id="options-container"></div>
+            <div class="mt-8 text-right">
+                <button id="next-btn" class="btn-primary">Próxima Questão</button>
+            </div>
+        </div>
+
+        <div id="result-screen" class="hidden">
+            <h1 class="text-2xl font-bold text-center text-gray-800 mb-4">Resultado Final</h1>
+            <p class="text-4xl font-bold text-center text-sky-600 mb-2"><span id="score"></span>%</p>
+            <p class="text-center text-gray-600 mb-6">Você acertou <span id="correct-answers"></span> de 100 questões.</p>
+            <div class="text-center mb-8">
+                <button id="restart-btn" class="btn-primary">Refazer Quiz</button>
+            </div>
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Revisão das Questões</h2>
+            <div id="review-container" class="space-y-4"></div>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            // História e Emancipação
+            { question: "Qual evento é considerado o marco zero da urbanização de Cariré?", options: ["A construção da Igreja Matriz", "A chegada de imigrantes europeus", "A inauguração da estação ferroviária", "A criação da primeira fazenda de gado"], answer: "A inauguração da estação ferroviária" },
+            { question: "Em que data foi inaugurada a estação ferroviária de Cariré, evento fundamental para sua fundação?", options: ["15 de novembro de 1889", "1 de novembro de 1893", "16 de setembro de 1929", "20 de outubro de 1935"], answer: "1 de novembro de 1893" },
+            { question: "Quais etnias indígenas são apontadas como os habitantes originais das terras de Cariré?", options: ["Kariri e Potiguara", "Tupinambá e Areriú", "Tremembé e Jucá", "Tabajara e Kalabaça"], answer: "Tupinambá e Areriú" },
+            { question: "A construção da Estrada de Ferro de Sobral, que deu origem a Cariré, se estendia em qual direção?", options: ["Em direção a Fortaleza", "Em direção a Camocim", "Em direção a Crateús", "Em direção a Tianguá"], answer: "Em direção a Crateús" },
+            { question: "Qual foi o primeiro status administrativo de Cariré antes de se tornar município?", options: ["Vila", "Arraial", "Distrito de Sobral", "Comarca"], answer: "Distrito de Sobral" },
+            { question: "Através de qual instrumento legal Cariré obteve sua primeira emancipação política?", options: ["Decreto Estadual nº 193", "Lei Estadual nº 2.704", "Decreto Estadual nº 157", "Lei Orgânica de 1911"], answer: "Lei Estadual nº 2.704" },
+            { question: "Qual é a data exata da primeira emancipação de Cariré, hoje comemorada como aniversário do município?", options: ["20 de maio de 1931", "23 de setembro de 1935", "1 de novembro de 1893", "16 de setembro de 1929"], answer: "16 de setembro de 1929" },
+            { question: "O que ocorreu com o município de Cariré em 20 de maio de 1931?", options: ["Sua restauração definitiva", "A inauguração da prefeitura", "Foi extinto e reanexado a Sobral", "Tornou-se a capital da região"], answer: "Foi extinto e reanexado a Sobral" },
+            { question: "A supressão da autonomia de Cariré em 1931 está inserida em qual contexto histórico nacional?", options: ["A Proclamação da República", "O fim do Império", "A centralização de poder da Era Vargas", "A ditadura militar"], answer: "A centralização de poder da Era Vargas" },
+            { question: "Qual decreto restaurou definitivamente a autonomia de Cariré?", options: ["Decreto Estadual nº 193", "Decreto Estadual nº 157", "Lei Estadual nº 2.704", "Decreto Imperial de 1888"], answer: "Decreto Estadual nº 157" },
+            { question: "Em que data ocorreu a instalação formal do município restaurado de Cariré?", options: ["16 de setembro de 1929", "23 de setembro de 1935", "20 de outubro de 1935", "10 de dezembro de 2012"], answer: "20 de outubro de 1935" },
+            { question: "Segundo o historiador Pompeu Sobrinho, uma das interpretações para o nome Cariré é a junção de 'CARI' e 'RÉ'. O que significa 'CARI'?", options: ["Queimada", "Rio", "Peixe cascudo", "Mata"], answer: "Peixe cascudo" },
+            { question: "A outra interpretação para o nome Cariré, 'depois da queimada', vem da junção de quais termos Tupi-Guarani?", options: ["CAI e RÉ", "CARI e RIRÉ", "CAI e RIRÉ", "CARA e RÉ"], answer: "CAI e RIRÉ" },
+            { question: "Qual o gentílico para quem nasce ou habita em Cariré?", options: ["Carirense", "Carireense", "Caririense", "Carireano"], answer: "Carireense" },
+            { question: "A Igreja de São Francisco, um dos marcos fundacionais, foi erigida ao lado de qual estrutura?", options: ["Da Prefeitura", "Do Rio Acaraú", "Da estação ferroviária", "Do mercado público"], answer: "Da estação ferroviária" },
+            // Geografia
+            { question: "A qual Mesorregião cearense pertence o município de Cariré?", options: ["Metropolitana de Fortaleza", "Noroeste Cearense", "Sertões Cearenses", "Sul Cearense"], answer: "Noroeste Cearense" },
+            { question: "Cariré faz parte de qual Microrregião?", options: ["Ibiapaba", "Litoral de Camocim e Acaraú", "Sobral", "Santa Quitéria"], answer: "Sobral" },
+            { question: "Qual a área territorial aproximada de Cariré, segundo o IBGE?", options: ["556 km²", "756 km²", "956 km²", "1.156 km²"], answer: "756 km²" },
+            { question: "Qual a classificação climática de Cariré segundo Köppen?", options: ["Aw (Tropical com estação seca)", "As (Tropical com verão seco)", "BSh (Tropical Quente Semiárido)", "Cfa (Subtropical úmido)"], answer: "BSh (Tropical Quente Semiárido)" },
+            { question: "O bioma predominante em Cariré, exclusivamente brasileiro, é a:", options: ["Mata Atlântica", "Caatinga", "Cerrado", "Amazônia"], answer: "Caatinga" },
+            { question: "Cariré está inserido na bacia hidrográfica de qual importante rio cearense?", options: ["Rio Jaguaribe", "Rio Coreaú", "Rio Banabuiú", "Rio Acaraú"], answer: "Rio Acaraú" },
+            { question: "Qual dos seguintes municípios NÃO faz limite com Cariré?", options: ["Sobral", "Santa Quitéria", "Groaíras", "Tianguá"], answer: "Tianguá" },
+            { question: "Com qual município Cariré faz fronteira ao Norte?", options: ["Mucambo", "Reriutaba", "Sobral", "Groaíras"], answer: "Sobral" },
+            { question: "A paisagem de Cariré é dominada por qual forma de relevo?", options: ["Chapadas", "Planícies Litorâneas", "Maciços Residuais", "Depressão Sertaneja"], answer: "Depressão Sertaneja" },
+            { question: "Qual a altitude média da sede municipal de Cariré?", options: ["49 metros", "149 metros", "349 metros", "549 metros"], answer: "149 metros" },
+            { question: "Qual destes NÃO é um distrito de Cariré?", options: ["Arariús", "Cacimbas", "Jucá", "Riachão"], answer: "Riachão" },
+            { question: "Quantos distritos compõem o município de Cariré, incluindo a sede?", options: ["3", "4", "5", "6"], answer: "5" },
+            { question: "O acesso a Cariré a partir de Fortaleza se dá principalmente pela BR-222 e qual rodovia estadual?", options: ["CE-060", "CE-187", "CE-183", "CE-257"], answer: "CE-183" },
+            // Governo e Legislação
+            { question: "A Lei Orgânica de Cariré, atualmente em vigor, foi promulgada em que ano?", options: ["1988", "1990", "2005", "2012"], answer: "2012" },
+            { question: "Quantos vereadores compõem a Câmara Municipal de Cariré?", options: ["9", "11", "13", "15"], answer: "11" },
+            { question: "Qual o partido político do prefeito eleito para o mandato 2025-2028 e da presidente da Câmara de 2025?", options: ["PT", "PL", "PDT", "MDB"], answer: "PDT" },
+            { question: "Onde está localizada a sede da Prefeitura de Cariré?", options: ["Rua Coronel Zezé", "Avenida da Universidade", "Praça Elísio Aguiar", "Rua da Matriz"], answer: "Praça Elísio Aguiar" },
+            { question: "Qual é a função primordial do Poder Legislativo municipal?", options: ["Executar obras e serviços públicos", "Julgar crimes e contravenções", "Legislar sobre assuntos locais e fiscalizar o Executivo", "Coletar impostos e taxas"], answer: "Legislar sobre assuntos locais e fiscalizar o Executivo" },
+            { question: "Quem foi o primeiro prefeito de Cariré após a restauração definitiva em 1935?", options: ["José Teles de Andrade", "Elísio Aguiar", "João de Castro Carneiro", "Francisco de Assis Pires"], answer: "Elísio Aguiar" },
+            { question: "A análise política de Cariré, com base nas eleições de 2024, revela uma forte concentração de poder em qual partido?", options: ["PL", "PT", "PDT", "PSB"], answer: "PDT" },
+            { question: "A Lei Orgânica é considerada a:", options: ["Lei de Diretrizes Orçamentárias", "Constituição Municipal", "Plano Diretor", "Código de Posturas"], answer: "Constituição Municipal" },
+            // Economia
+            { question: "Qual setor representa a maior fatia do PIB de Cariré?", options: ["Indústria", "Agropecuária", "Serviços (privados)", "Administração, saúde e educação públicas"], answer: "Administração, saúde e educação públicas" },
+            { question: "A agropecuária, segundo pilar da economia, representa aproximadamente qual percentual do PIB?", options: ["13,4%", "22,9%", "29,4%", "43,3%"], answer: "29,4%" },
+            { question: "Qual o valor aproximado do PIB per capita de Cariré, segundo dados de 2021?", options: ["R$ 5.500", "R$ 10.500", "R$ 15.500", "R$ 20.500"], answer: "R$ 10.500" },
+            { question: "O Índice de Desenvolvimento Humano Municipal (IDHM) de Cariré em 2010 (0,596) é classificado como:", options: ["Muito Baixo", "Baixo", "Médio", "Alto"], answer: "Médio" },
+            { question: "Na pecuária, qual criação é bem adaptada ao clima semiárido e se destaca em Cariré?", options: ["Suinocultura", "Avicultura", "Caprinocultura", "Piscicultura"], answer: "Caprinocultura" },
+            { question: "A participação da Indústria no PIB de Cariré é:", options: ["Residual", "Dominante", "Equivalente à agropecuária", "A principal fonte de empregos"], answer: "Residual" },
+            // Cultura e Símbolos
+            { question: "Qual é o padroeiro de Cariré?", options: ["São Francisco de Assis", "São Sebastião", "Santo Antônio de Pádua", "São José"], answer: "Santo Antônio de Pádua" },
+            { question: "A principal festa religiosa de Cariré ocorre em qual mês?", options: ["Setembro", "Dezembro", "Junho", "Março"], answer: "Junho" },
+            { question: "A bandeira de Cariré é composta por três faixas verticais. Quais são suas cores?", options: ["Verde, branco e azul", "Azul, branco e azul", "Branco, azul e branco", "Verde, amarelo e azul"], answer: "Azul, branco e azul" },
+            { question: "Quem é a autora da letra do hino de Cariré?", options: ["Rachel de Queiroz", "Francisca Clotilde", "Valdelice de Castro Carneiro", "Elísio Aguiar"], answer: "Valdelice de Castro Carneiro" },
+            { question: "O verso do hino 'neste ardente sertão nordestino' faz referência direta a qual aspecto do município?", options: ["Sua história política", "Sua geografia e clima", "Sua economia industrial", "Seus times de futebol"], answer: "Sua geografia e clima" },
+            { question: "Qual patrimônio histórico de Cariré abriga um acervo com mais de 8 mil peças?", options: ["Igreja Matriz", "Câmara Municipal", "Museu Euclides Rufino Rodrigues", "Estação Ferroviária"], answer: "Museu Euclides Rufino Rodrigues" },
+            { question: "A imponente torre da Igreja Matriz de Santo Antônio, um cartão-postal da cidade, possui quantos metros de altura?", options: ["21 metros", "31 metros", "41 metros", "51 metros"], answer: "31 metros" },
+            { question: "Qual tipo de artesanato NÃO é tipicamente associado a Cariré?", options: ["Peças em palha", "Crochê", "Redes artesanais", "Renda de bilro"], answer: "Renda de bilro" },
+            // Perguntas Adicionais de Aprofundamento (50 a 100)
+            { question: "O que o estribilho do hino de Cariré exalta?", options: ["A riqueza mineral", "O civismo e o amor pela terra", "As conquistas no esporte", "A produção de algodão"], answer: "O civismo e o amor pela terra" },
+            { question: "Em que ano foi construída a Igreja Matriz de Santo Antônio de Pádua?", options: ["1893", "1929", "1956", "1988"], answer: "1956" },
+            { question: "A 'Semana do Município' em Cariré celebra qual evento?", options: ["A festa do padroeiro", "O início da colheita", "A emancipação política", "A fundação da primeira escola"], answer: "A emancipação política" },
+            { question: "Qual prefeito governou Cariré por mais mandatos (intercalados ou não)?", options: ["Elísio Aguiar", "José Veras de Araújo", "João de Castro Carneiro", "Francisco Itamar de Sá"], answer: "João de Castro Carneiro" },
+            { question: "A população estimada de Cariré para 2024 é de aproximadamente:", options: ["12.000 habitantes", "15.000 habitantes", "18.000 habitantes", "21.000 habitantes"], answer: "18.000 habitantes" },
+            { question: "Qual a densidade demográfica aproximada de Cariré?", options: ["13,9 hab/km²", "23,9 hab/km²", "33,9 hab/km²", "43,9 hab/km²"], answer: "23,9 hab/km²" },
+            { question: "Qual dos distritos de Cariré tem o nome de uma árvore típica da região?", options: ["Arariús", "Cacimbas", "Tapuio", "Jucá"], answer: "Jucá" },
+            { question: "A sede do Poder Legislativo de Cariré está localizada em qual logradouro?", options: ["Praça Elísio Aguiar", "Rua do Comércio", "Avenida Perimetral", "Praça da Matriz"], answer: "Praça Elísio Aguiar" },
+            { question: "O 'Cariré Junino' é um festival de qual manifestação cultural?", options: ["Bandas de forró", "Repentistas", "Quadrilhas", "Reisado"], answer: "Quadrilhas" },
+            { question: "Qual a principal fonte de água que compõe a hidrografia de Cariré?", options: ["Açude Araras", "Rio Coreaú", "Bacia do Rio Acaraú", "Açude Castanhão"], answer: "Bacia do Rio Acaraú" },
+            { question: "A restauração definitiva da autonomia de Cariré em 1935 o desmembrou de qual município?", options: ["Santa Quitéria", "Groaíras", "Sobral", "Reriutaba"], answer: "Sobral" },
+            { question: "Qual a principal cultura agrícola de subsistência em Cariré?", options: ["Cana-de-açúcar e café", "Soja e trigo", "Milho e feijão", "Laranja e uva"], answer: "Milho e feijão" },
+            { question: "O período chuvoso em Cariré se concentra principalmente em qual quadrimestre?", options: ["Janeiro a Abril", "Maio a Agosto", "Setembro a Dezembro", "Outubro a Janeiro"], answer: "Janeiro a Abril" },
+            { question: "A Igreja de São Francisco, mais antiga, data de qual período?", options: ["Início do século XVIII", "Meados do século XIX", "Final do século XIX", "Início do século XX"], answer: "Final do século XIX" },
+            { question: "Qual o valor total aproximado do PIB de Cariré em 2021?", options: ["R$ 93 milhões", "R$ 143 milhões", "R$ 193 milhões", "R$ 243 milhões"], answer: "R$ 193 milhões" },
+            { question: "O mandato do prefeito eleito em 2024 se estenderá até qual ano?", options: ["2026", "2027", "2028", "2029"], answer: "2028" },
+            { question: "O alinhamento político entre Executivo e Legislativo em Cariré pode facilitar qual aspecto da gestão?", options: ["A fiscalização rigorosa", "A oposição construtiva", "A governabilidade e aprovação de projetos", "A alternância de poder"], answer: "A governabilidade e aprovação de projetos" },
+            { question: "O que o brasão de armas, presente na bandeira, simboliza?", options: ["Apenas a fauna local", "Aspectos da história, cultura e economia", "As famílias fundadoras", "O clima da região"], answer: "Aspectos da história, cultura e economia" },
+            { question: "Qual a principal característica do relevo da Depressão Sertaneja?", options: ["Altas montanhas e picos", "Área de relevo plano e rebaixado", "Vastas planícies litorâneas", "Cânions profundos"], answer: "Área de relevo plano e rebaixado" },
+            { question: "A festa do padroeiro em Cariré dura quantos dias?", options: ["Um dia", "Três dias", "Sete dias", "Dez dias"], answer: "Dez dias" },
+            { question: "Qual foi o último ano em que Cariré figurou apenas como distrito de Sobral antes de sua restauração?", options: ["1929", "1931", "1933", "1935"], answer: "1933" },
+            { question: "A economia de Cariré é marcada por uma forte dependência de qual setor?", options: ["Turismo", "Indústria de transformação", "Setor público", "Exportação de minérios"], answer: "Setor público" },
+            { question: "Qual dos seguintes prefeitos governou Cariré no período do regime militar?", options: ["Elísio Aguiar", "José Veras de Araújo", "Antônio de Assis Pires", "Elmo Aguiar"], answer: "José Veras de Araújo" },
+            { question: "O que é um gentílico?", options: ["O nome oficial de uma cidade", "O termo que designa os habitantes de um lugar", "O dialeto falado em uma região", "O prato típico de um município"], answer: "O termo que designa os habitantes de um lugar" },
+            { question: "A Floresta Caducifólia Espinhosa, presente em Cariré, tem como característica:", options: ["Manter as folhas o ano todo", "Perder as folhas na estação seca", "Ser composta por pinheiros", "Existir apenas em áreas litorâneas"], answer: "Perder as folhas na estação seca" },
+            { question: "Qual o principal desafio para a agropecuária em Cariré, dado seu clima?", options: ["Excesso de chuvas e alagamentos", "Geada e temperaturas baixas", "Escassez hídrica e irregularidade das chuvas", "Solos excessivamente ácidos"], answer: "Escassez hídrica e irregularidade das chuvas" },
+            { question: "O Museu Euclides Rufino Rodrigues está localizado em qual tipo de edificação histórica?", options: ["Numa antiga casa de câmara e cadeia", "Num antigo engenho de cana", "Numa antiga fábrica de algodão", "Num antigo palacete de coronel"], answer: "Numa antiga fábrica de algodão" },
+            { question: "Qual a principal função da Lei Orgânica Municipal?", options: ["Definir o calendário de feriados", "Organizar o município como entidade autônoma", "Estabelecer o valor dos impostos anualmente", "Nomear os secretários municipais"], answer: "Organizar o município como entidade autônoma" },
+            { question: "A eleição municipal que definiu a gestão 2025-2028 ocorreu em que ano?", options: ["2020", "2022", "2024", "2025"], answer: "2024" },
+            { question: "Qual dos seguintes municípios faz fronteira com Cariré tanto a Leste quanto ao Sul?", options: ["Sobral", "Groaíras", "Reriutaba", "Santa Quitéria"], answer: "Santa Quitéria" },
+            { question: "O que significa o termo 'quermesse', comum na festa do padroeiro?", options: ["Uma procissão solene", "Uma missa campal", "Uma festa popular com barracas e jogos", "Um período de jejum e oração"], answer: "Uma festa popular com barracas e jogos" },
+            { question: "O mandato de um prefeito no Brasil tem a duração de:", options: ["2 anos", "4 anos", "5 anos", "6 anos"], answer: "4 anos" },
+            { question: "A criação de gado bovino em Cariré é chamada de:", options: ["Bovinocultura", "Caprinocultura", "Ovinocultura", "Bubalinocultura"], answer: "Bovinocultura" },
+            { question: "O verso 'De firmeza são marco: teus passos' do hino de Cariré refere-se a qual aspecto da história local?", options: ["A fertilidade do solo", "A fé religiosa do povo", "A luta pela autonomia política", "A beleza do rio Acaraú"], answer: "A luta pela autonomia política" },
+            { question: "Qual o principal produto do artesanato em fibra vegetal de Cariré?", options: ["Peças em argila", "Peças em madeira", "Peças em palha", "Peças em metal"], answer: "Peças em palha" },
+            { question: "A maior parte da população de Cariré reside em qual zona?", options: ["Zona Urbana", "Zona Rural", "A distribuição é equilibrada", "Não há dados sobre isso"], answer: "Zona Rural" },
+            { question: "Qual o papel da Câmara de Vereadores em relação ao orçamento municipal?", options: ["Elaborar e executar o orçamento", "Apenas executar o orçamento", "Aprovar e fiscalizar o orçamento proposto pelo prefeito", "Ignorar o orçamento"], answer: "Aprovar e fiscalizar o orçamento proposto pelo prefeito" },
+            { question: "A Rede de Viação Cearense foi a responsável pela construção de qual importante obra em Cariré?", options: ["Açude Público", "Hospital Municipal", "Estação Ferroviária", "Mercado Central"], answer: "Estação Ferroviária" },
+            { question: "Qual prefeito de Cariré teve o mandato mais longo e contínuo?", options: ["Elísio Aguiar (10 anos)", "Antônio Rufino Martins (8 anos)", "Francisco Itamar de Sá (8 anos)", "Elmo Aguiar (8 anos)"], answer: "Elísio Aguiar (10 anos)" },
+            { question: "A economia de Cariré pode ser definida como:", options: ["Altamente industrializada e exportadora", "Baseada no turismo de luxo", "De base agropastoril com forte peso do setor público", "Focada no setor de tecnologia da informação"], answer: "De base agropastoril com forte peso do setor público" }
+        ];
+
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const startBtn = document.getElementById('start-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const restartBtn = document.getElementById('restart-btn');
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let shuffledQuestions = [];
+
+        function shuffleArray(array) {
+            let currentIndex = array.length,  randomIndex;
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [
+                array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        function startQuiz() {
+            shuffledQuestions = shuffleArray([...quizData]);
+            startScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            resultScreen.classList.add('hidden');
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = shuffledQuestions[currentQuestionIndex];
+            document.getElementById('question-number').textContent = currentQuestionIndex + 1;
+            document.getElementById('question-text').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            const shuffledOptions = shuffleArray([...question.options]);
+
+            shuffledOptions.forEach(option => {
+                const optionId = option.replace(/\s+/g, '-').toLowerCase();
+                optionsContainer.innerHTML += `
+                    <div>
+                        <input type="radio" name="option" value="${option}" id="${optionId}" class="sr-only">
+                        <label for="${optionId}" class="option-label">${option}</label>
+                    </div>
+                `;
+            });
+            updateProgressBar();
+        }
+        
+        function updateProgressBar() {
+            const progress = ((currentQuestionIndex) / shuffledQuestions.length) * 100;
+            document.getElementById('progress').style.width = `${progress}%`;
+        }
+
+        function handleNextQuestion() {
+            const selectedOption = document.querySelector('input[name="option"]:checked');
+            if (!selectedOption) {
+                alert('Por favor, selecione uma opção.');
+                return;
+            }
+
+            const currentQuestion = shuffledQuestions[currentQuestionIndex];
+            userAnswers.push({ question: currentQuestion.question, userAnswer: selectedOption.value, correctAnswer: currentQuestion.answer });
+
+            if (selectedOption.value === currentQuestion.answer) {
+                score++;
+            }
+
+            currentQuestionIndex++;
+            if (currentQuestionIndex < shuffledQuestions.length) {
+                showQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            quizScreen.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+
+            const finalScore = (score / shuffledQuestions.length) * 100;
+            document.getElementById('score').textContent = finalScore.toFixed(0);
+            document.getElementById('correct-answers').textContent = score;
+
+            const reviewContainer = document.getElementById('review-container');
+            reviewContainer.innerHTML = '';
+            userAnswers.forEach((answerData, index) => {
+                const isCorrect = answerData.userAnswer === answerData.correctAnswer;
+                const reviewClass = isCorrect ? 'correct' : 'incorrect';
+
+                reviewContainer.innerHTML += `
+                    <div class="review-question p-4 rounded-lg ${reviewClass}">
+                        <p class="font-bold text-gray-800">${index + 1}. ${answerData.question}</p>
+                        <p class="text-sm mt-2">Sua resposta: <span class="font-medium">${answerData.userAnswer || 'Nenhuma'}</span></p>
+                        ${!isCorrect ? `<p class="text-sm text-green-700 font-bold">Resposta correta: ${answerData.correctAnswer}</p>` : ''}
+                    </div>
+                `;
+            });
+        }
+
+        startBtn.addEventListener('click', startQuiz);
+        nextBtn.addEventListener('click', handleNextQuestion);
+        restartBtn.addEventListener('click', startQuiz);
+    </script>
+</body>
+</html>
