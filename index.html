@@ -34,11 +34,6 @@
             background-color: #f9fafb;
             border-color: #0284c7;
         }
-        input[type="radio"]:checked + .option-label {
-            background-color: #e0f2fe;
-            border-color: #0284c7;
-            font-weight: 500;
-        }
         .btn-primary {
             background-color: #0ea5e9;
             color: white;
@@ -58,13 +53,28 @@
             background-color: #fee2e2;
             border-left: 4px solid #ef4444;
         }
+        /* New styles for immediate feedback */
+        .options-answered .option-label {
+            pointer-events: none; /* Disables further clicks and hover effects */
+        }
+        .options-answered .option-label.correct-answer {
+            background-color: #dcfce7;
+            border-color: #22c55e;
+            font-weight: 500;
+            color: #166534;
+        }
+        .options-answered .option-label.wrong-answer {
+            background-color: #fee2e2;
+            border-color: #ef4444;
+            color: #991b1b;
+        }
     </style>
 </head>
 <body>
     <div id="quiz-app" class="quiz-container">
         <div id="start-screen">
             <h1 class="text-2xl font-bold text-center text-gray-800 mb-2">Quiz Preparatório: Município de Cariré</h1>
-            <p class="text-center text-gray-600 mb-6">Teste seus conhecimentos com 100 questões aleatórias no estilo da banca Consulpam.</p>
+            <p class="text-center text-gray-600 mb-6">Teste seus conhecimentos com 300 questões aleatórias no estilo da banca Consulpam.</p>
             <div class="text-center">
                 <button id="start-btn" class="btn-primary">Iniciar Quiz</button>
             </div>
@@ -72,7 +82,7 @@
 
         <div id="quiz-screen" class="hidden">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold text-gray-800">Questão <span id="question-number"></span> de 100</h2>
+                <h2 class="text-xl font-bold text-gray-800">Questão <span id="question-number"></span> de 300</h2>
                 <div id="progress-bar" class="w-1/2 bg-gray-200 rounded-full h-2.5">
                     <div id="progress" class="bg-sky-600 h-2.5 rounded-full" style="width: 0%"></div>
                 </div>
@@ -87,7 +97,7 @@
         <div id="result-screen" class="hidden">
             <h1 class="text-2xl font-bold text-center text-gray-800 mb-4">Resultado Final</h1>
             <p class="text-4xl font-bold text-center text-sky-600 mb-2"><span id="score"></span>%</p>
-            <p class="text-center text-gray-600 mb-6">Você acertou <span id="correct-answers"></span> de 100 questões.</p>
+            <p class="text-center text-gray-600 mb-6">Você acertou <span id="correct-answers"></span> de 300 questões.</p>
             <div class="text-center mb-8">
                 <button id="restart-btn" class="btn-primary">Refazer Quiz</button>
             </div>
@@ -98,7 +108,7 @@
 
     <script>
         const quizData = [
-            // História e Emancipação
+            // História e Emancipação - Bloco 1
             { question: "Qual evento é considerado o marco zero da urbanização de Cariré?", options: ["A construção da Igreja Matriz", "A chegada de imigrantes europeus", "A inauguração da estação ferroviária", "A criação da primeira fazenda de gado"], answer: "A inauguração da estação ferroviária" },
             { question: "Em que data foi inaugurada a estação ferroviária de Cariré, evento fundamental para sua fundação?", options: ["15 de novembro de 1889", "1 de novembro de 1893", "16 de setembro de 1929", "20 de outubro de 1935"], answer: "1 de novembro de 1893" },
             { question: "Quais etnias indígenas são apontadas como os habitantes originais das terras de Cariré?", options: ["Kariri e Potiguara", "Tupinambá e Areriú", "Tremembé e Jucá", "Tabajara e Kalabaça"], answer: "Tupinambá e Areriú" },
@@ -114,7 +124,7 @@
             { question: "A outra interpretação para o nome Cariré, 'depois da queimada', vem da junção de quais termos Tupi-Guarani?", options: ["CAI e RÉ", "CARI e RIRÉ", "CAI e RIRÉ", "CARA e RÉ"], answer: "CAI e RIRÉ" },
             { question: "Qual o gentílico para quem nasce ou habita em Cariré?", options: ["Carirense", "Carireense", "Caririense", "Carireano"], answer: "Carireense" },
             { question: "A Igreja de São Francisco, um dos marcos fundacionais, foi erigida ao lado de qual estrutura?", options: ["Da Prefeitura", "Do Rio Acaraú", "Da estação ferroviária", "Do mercado público"], answer: "Da estação ferroviária" },
-            // Geografia
+            // Geografia - Bloco 1
             { question: "A qual Mesorregião cearense pertence o município de Cariré?", options: ["Metropolitana de Fortaleza", "Noroeste Cearense", "Sertões Cearenses", "Sul Cearense"], answer: "Noroeste Cearense" },
             { question: "Cariré faz parte de qual Microrregião?", options: ["Ibiapaba", "Litoral de Camocim e Acaraú", "Sobral", "Santa Quitéria"], answer: "Sobral" },
             { question: "Qual a área territorial aproximada de Cariré, segundo o IBGE?", options: ["556 km²", "756 km²", "956 km²", "1.156 km²"], answer: "756 km²" },
@@ -128,7 +138,7 @@
             { question: "Qual destes NÃO é um distrito de Cariré?", options: ["Arariús", "Cacimbas", "Jucá", "Riachão"], answer: "Riachão" },
             { question: "Quantos distritos compõem o município de Cariré, incluindo a sede?", options: ["3", "4", "5", "6"], answer: "5" },
             { question: "O acesso a Cariré a partir de Fortaleza se dá principalmente pela BR-222 e qual rodovia estadual?", options: ["CE-060", "CE-187", "CE-183", "CE-257"], answer: "CE-183" },
-            // Governo e Legislação
+            // Governo e Legislação - Bloco 1
             { question: "A Lei Orgânica de Cariré, atualmente em vigor, foi promulgada em que ano?", options: ["1988", "1990", "2005", "2012"], answer: "2012" },
             { question: "Quantos vereadores compõem a Câmara Municipal de Cariré?", options: ["9", "11", "13", "15"], answer: "11" },
             { question: "Qual o partido político do prefeito eleito para o mandato 2025-2028 e da presidente da Câmara de 2025?", options: ["PT", "PL", "PDT", "MDB"], answer: "PDT" },
@@ -137,14 +147,14 @@
             { question: "Quem foi o primeiro prefeito de Cariré após a restauração definitiva em 1935?", options: ["José Teles de Andrade", "Elísio Aguiar", "João de Castro Carneiro", "Francisco de Assis Pires"], answer: "Elísio Aguiar" },
             { question: "A análise política de Cariré, com base nas eleições de 2024, revela uma forte concentração de poder em qual partido?", options: ["PL", "PT", "PDT", "PSB"], answer: "PDT" },
             { question: "A Lei Orgânica é considerada a:", options: ["Lei de Diretrizes Orçamentárias", "Constituição Municipal", "Plano Diretor", "Código de Posturas"], answer: "Constituição Municipal" },
-            // Economia
+            // Economia - Bloco 1
             { question: "Qual setor representa a maior fatia do PIB de Cariré?", options: ["Indústria", "Agropecuária", "Serviços (privados)", "Administração, saúde e educação públicas"], answer: "Administração, saúde e educação públicas" },
             { question: "A agropecuária, segundo pilar da economia, representa aproximadamente qual percentual do PIB?", options: ["13,4%", "22,9%", "29,4%", "43,3%"], answer: "29,4%" },
             { question: "Qual o valor aproximado do PIB per capita de Cariré, segundo dados de 2021?", options: ["R$ 5.500", "R$ 10.500", "R$ 15.500", "R$ 20.500"], answer: "R$ 10.500" },
             { question: "O Índice de Desenvolvimento Humano Municipal (IDHM) de Cariré em 2010 (0,596) é classificado como:", options: ["Muito Baixo", "Baixo", "Médio", "Alto"], answer: "Médio" },
             { question: "Na pecuária, qual criação é bem adaptada ao clima semiárido e se destaca em Cariré?", options: ["Suinocultura", "Avicultura", "Caprinocultura", "Piscicultura"], answer: "Caprinocultura" },
             { question: "A participação da Indústria no PIB de Cariré é:", options: ["Residual", "Dominante", "Equivalente à agropecuária", "A principal fonte de empregos"], answer: "Residual" },
-            // Cultura e Símbolos
+            // Cultura e Símbolos - Bloco 1
             { question: "Qual é o padroeiro de Cariré?", options: ["São Francisco de Assis", "São Sebastião", "Santo Antônio de Pádua", "São José"], answer: "Santo Antônio de Pádua" },
             { question: "A principal festa religiosa de Cariré ocorre em qual mês?", options: ["Setembro", "Dezembro", "Junho", "Março"], answer: "Junho" },
             { question: "A bandeira de Cariré é composta por três faixas verticais. Quais são suas cores?", options: ["Verde, branco e azul", "Azul, branco e azul", "Branco, azul e branco", "Verde, amarelo e azul"], answer: "Azul, branco e azul" },
@@ -153,7 +163,7 @@
             { question: "Qual patrimônio histórico de Cariré abriga um acervo com mais de 8 mil peças?", options: ["Igreja Matriz", "Câmara Municipal", "Museu Euclides Rufino Rodrigues", "Estação Ferroviária"], answer: "Museu Euclides Rufino Rodrigues" },
             { question: "A imponente torre da Igreja Matriz de Santo Antônio, um cartão-postal da cidade, possui quantos metros de altura?", options: ["21 metros", "31 metros", "41 metros", "51 metros"], answer: "31 metros" },
             { question: "Qual tipo de artesanato NÃO é tipicamente associado a Cariré?", options: ["Peças em palha", "Crochê", "Redes artesanais", "Renda de bilro"], answer: "Renda de bilro" },
-            // Perguntas Adicionais de Aprofundamento (50 a 100)
+            // Aprofundamento - Bloco 1 (Original 50-100)
             { question: "O que o estribilho do hino de Cariré exalta?", options: ["A riqueza mineral", "O civismo e o amor pela terra", "As conquistas no esporte", "A produção de algodão"], answer: "O civismo e o amor pela terra" },
             { question: "Em que ano foi construída a Igreja Matriz de Santo Antônio de Pádua?", options: ["1893", "1929", "1956", "1988"], answer: "1956" },
             { question: "A 'Semana do Município' em Cariré celebra qual evento?", options: ["A festa do padroeiro", "O início da colheita", "A emancipação política", "A fundação da primeira escola"], answer: "A emancipação política" },
@@ -193,7 +203,91 @@
             { question: "Qual o papel da Câmara de Vereadores em relação ao orçamento municipal?", options: ["Elaborar e executar o orçamento", "Apenas executar o orçamento", "Aprovar e fiscalizar o orçamento proposto pelo prefeito", "Ignorar o orçamento"], answer: "Aprovar e fiscalizar o orçamento proposto pelo prefeito" },
             { question: "A Rede de Viação Cearense foi a responsável pela construção de qual importante obra em Cariré?", options: ["Açude Público", "Hospital Municipal", "Estação Ferroviária", "Mercado Central"], answer: "Estação Ferroviária" },
             { question: "Qual prefeito de Cariré teve o mandato mais longo e contínuo?", options: ["Elísio Aguiar (10 anos)", "Antônio Rufino Martins (8 anos)", "Francisco Itamar de Sá (8 anos)", "Elmo Aguiar (8 anos)"], answer: "Elísio Aguiar (10 anos)" },
-            { question: "A economia de Cariré pode ser definida como:", options: ["Altamente industrializada e exportadora", "Baseada no turismo de luxo", "De base agropastoril com forte peso do setor público", "Focada no setor de tecnologia da informação"], answer: "De base agropastoril com forte peso do setor público" }
+            { question: "A economia de Cariré pode ser definida como:", options: ["Altamente industrializada e exportadora", "Baseada no turismo de luxo", "De base agropastoril com forte peso do setor público", "Focada no setor de tecnologia da informação"], answer: "De base agropastoril com forte peso do setor público" },
+            // Novas Questões - Bloco 2
+            { question: "A ferrovia que deu origem a Cariré foi um fator determinante para sua função econômica inicial, que era ligada principalmente a quê?", options: ["Turismo religioso", "Mineração de ouro", "Logística de transporte e escoamento da produção", "Produção de tecidos"], answer: "Logística de transporte e escoamento da produção" },
+            { question: "A volátil história de emancipação de Cariré reflete as convulsões políticas de qual período da história do Brasil?", options: ["Primeira metade do século XX", "Período Colonial", "Segundo Reinado", "Final do século XX"], answer: "Primeira metade do século XX" },
+            { question: "Qual o número da Lei Estadual que concedeu a primeira emancipação a Cariré?", options: ["Lei nº 157", "Lei nº 193", "Lei nº 2.704", "Lei nº 402/2012"], answer: "Lei nº 2.704" },
+            { question: "Qual o número do Decreto Estadual que extinguiu o município de Cariré em 1931?", options: ["Decreto nº 157", "Decreto nº 193", "Decreto nº 2.704", "Decreto nº 1.935"], answer: "Decreto nº 193" },
+            { question: "Qual o número do Decreto Estadual que restaurou em definitivo a autonomia de Cariré?", options: ["Decreto nº 157", "Decreto nº 193", "Decreto nº 2.704", "Decreto nº 1.931"], answer: "Decreto nº 157" },
+            { question: "A população estimada de Cariré para 2024 (18.075) e sua área (756,9 km²) resultam em qual densidade demográfica aproximada?", options: ["15,2 hab/km²", "23,9 hab/km²", "31,5 hab/km²", "40,1 hab/km²"], answer: "23,9 hab/km²" },
+            { question: "A temperatura média anual em Cariré, entre 26°C e 28°C, é característica de qual tipo de clima?", options: ["Temperado", "Subtropical", "Tropical Quente Semiárido", "Equatorial"], answer: "Tropical Quente Semiárido" },
+            { question: "Qual município faz fronteira com Cariré a Oeste?", options: ["Sobral", "Santa Quitéria", "Groaíras", "Mucambo e Pacujá"], answer: "Mucambo e Pacujá" },
+            { question: "O conceito de identidade 'sertaneja' de Cariré unifica quais aspectos?", options: ["Apenas a culinária e a música", "Apenas a política e a religião", "Economia, cultura e resiliência social", "A arquitetura e o esporte"], answer: "Economia, cultura e resiliência social" },
+            { question: "Qual o número da Lei Orgânica de Cariré promulgada em 10 de dezembro de 2012?", options: ["Lei nº 01/2012", "Lei nº 10/2012", "Lei nº 12/2012", "Lei nº 20/2012"], answer: "Lei nº 01/2012" },
+            { question: "Além do Prefeito, quem mais compõe o Poder Executivo municipal?", options: ["Os vereadores", "Os juízes", "O Vice-Prefeito e os Secretários", "O conselho tutelar"], answer: "O Vice-Prefeito e os Secretários" },
+            { question: "Qual a principal função da Câmara de Vereadores em relação aos atos do Prefeito?", options: ["Aprovar todos os atos sem questionar", "Fiscalizar a aplicação dos recursos públicos", "Executar os atos em conjunto", "Ignorar os atos do prefeito"], answer: "Fiscalizar a aplicação dos recursos públicos" },
+            { question: "Qual o nome completo do prefeito eleito para o mandato 2025-2028?", options: ["Antonio de Assis Pires", "Antonio Rufino Martins", "Antonio Elmo Aguiar", "Antonio Itamar de Sá"], answer: "Antonio Rufino Martins" },
+            { question: "Qual dos seguintes não é um símbolo oficial de Cariré estabelecido na Lei Orgânica?", options: ["A Bandeira", "O Brasão de Armas", "O Hino", "A Árvore Símbolo"], answer: "A Árvore Símbolo" },
+            { question: "A letra do hino de Cariré é um documento poético que sintetiza a:", options: ["Economia global", "Alma do município", "Geologia da região", "Legislação de trânsito"], answer: "Alma do município" },
+            { question: "A economia de Cariré é característica de muitos municípios de qual região brasileira?", options: ["Sul", "Sudeste", "Interior do Nordeste", "Centro-Oeste"], answer: "Interior do Nordeste" },
+            { question: "O que a análise granular do PIB de Cariré demonstra sobre sua economia?", options: ["Que a indústria é o setor mais forte", "Que a administração pública é o principal motor econômico", "Que o turismo é a principal fonte de renda", "Que a exportação de soja domina a economia"], answer: "Que a administração pública é o principal motor econômico" },
+            { question: "O IDHM de 0,596, embora médio, indica desafios persistentes em quais áreas?", options: ["Transporte, segurança e lazer", "Indústria, comércio e turismo", "Renda, longevidade e educação", "Agricultura, pecuária e extrativismo"], answer: "Renda, longevidade e educação" },
+            { question: "A Festa do Padroeiro e a Emancipação Política representam, respectivamente, quais pilares da identidade local?", options: ["Cívico e econômico", "Religioso e cívico", "Cultural e esportivo", "Social e político"], answer: "Religioso e cívico" },
+            { question: "A simbiose cultural em Cariré é demonstrada pela coincidência de quais festejos?", options: ["Carnaval e Semana Santa", "Festa do Padroeiro e festejos juninos", "Natal e Ano Novo", "Emancipação e Dia da Independência"], answer: "Festa do Padroeiro e festejos juninos" },
+            // Novas Questões - Bloco 3
+            { question: "A Rede de Viação Cearense foi a entidade responsável pela:", options: ["Construção da primeira escola", "Instalação da rede elétrica", "Inauguração da estação ferroviária", "Pavimentação das primeiras ruas"], answer: "Inauguração da estação ferroviária" },
+            { question: "O que significa o termo 'vila' no contexto da primeira emancipação de Cariré?", options: ["Um bairro rural", "Um pequeno povoado sem status", "Uma categoria administrativa anterior à de cidade", "Uma propriedade particular"], answer: "Uma categoria administrativa anterior à de cidade" },
+            { question: "A restauração de Cariré em 1935 pode ser vista como uma vitória de qual princípio?", options: ["Centralização política", "Autonomia local", "Monarquia", "Intervenção federal"], answer: "Autonomia local" },
+            { question: "Qual a latitude aproximada da sede de Cariré?", options: ["3°57′ S", "13°57′ S", "23°57′ S", "33°57′ S"], answer: "3°57′ S" },
+            { question: "Qual a longitude aproximada da sede de Cariré?", options: ["30°28′ O", "40°28′ O", "50°28′ O", "60°28′ O"], answer: "40°28′ O" },
+            { question: "A Caatinga Arbustiva Aberta é um tipo de vegetação adaptada a qual condição?", options: ["Alta umidade e chuvas constantes", "Baixas temperaturas e neve", "Escassez hídrica e altas temperaturas", "Solo pantanoso e alagadiço"], answer: "Escassez hídrica e altas temperaturas" },
+            { question: "Qual dos municípios limítrofes de Cariré NÃO compartilha fronteira com Sobral?", options: ["Mucambo", "Groaíras", "Varjota", "Pacujá"], answer: "Varjota" },
+            { question: "A Lei Orgânica de Cariré estabelece a harmonia do município com quais outras Constituições?", options: ["Apenas com a Constituição Federal", "Apenas com a Constituição Estadual", "Com as Constituições Federal e Estadual", "Com as leis de outros municípios"], answer: "Com as Constituições Federal e Estadual" },
+            { question: "Qual o nome da praça onde se localizam as sedes dos poderes Executivo e Legislativo de Cariré?", options: ["Praça da Matriz", "Praça Getúlio Vargas", "Praça Elísio Aguiar", "Praça da Independência"], answer: "Praça Elísio Aguiar" },
+            { question: "A eleição da vereadora Luciana Miranda (PDT) para a presidência da Câmara demonstra o quê na política local?", options: ["A força da oposição", "O domínio do partido PDT", "A ausência de outros partidos", "A influência de partidos de fora do estado"], answer: "O domínio do partido PDT" },
+            { question: "O que o hino quer dizer com 'fulgurante será tua história'?", options: ["Que a história será esquecida", "Que a história será triste", "Que a história será brilhante e notável", "Que a história será curta"], answer: "Que a história será brilhante e notável" },
+            { question: "A principal atividade do setor privado em Cariré é a:", options: ["Indústria têxtil", "Turismo de aventura", "Agropecuária", "Tecnologia da informação"], answer: "Agropecuária" },
+            { question: "O que significa dizer que a indústria tem participação 'residual' na economia?", options: ["Que é a maior parte da economia", "Que sua contribuição é muito pequena", "Que está em rápido crescimento", "Que é a base da exportação"], answer: "Que sua contribuição é muito pequena" },
+            { question: "A festa do padroeiro, Santo Antônio, culmina em qual dia de junho?", options: ["Dia 1º", "Dia 10", "Dia 13", "Dia 24"], answer: "Dia 13" },
+            { question: "O que é um 'pavilhão municipal'?", options: ["O prédio da prefeitura", "O ginásio de esportes", "A bandeira oficial do município", "O parque de exposições"], answer: "A bandeira oficial do município" },
+            { question: "O que significa o termo 'tangível' quando se refere a patrimônio histórico?", options: ["Que é algo que não pode ser tocado, como uma dança", "Que é algo físico, que pode ser tocado, como um prédio", "Que é algo que foi tombado recentemente", "Que é um patrimônio de pouco valor"], answer: "Que é algo físico, que pode ser tocado, como um prédio" },
+            { question: "Qual dos distritos de Cariré tem nome relacionado à água?", options: ["Jucá", "Arariús", "Cacimbas", "Tapuio"], answer: "Cacimbas" },
+            { question: "A 'função fiscalizatória' da Câmara de Vereadores é um pilar de qual sistema democrático?", options: ["Sistema de partido único", "Sistema de freios e contrapesos", "Sistema parlamentarista", "Sistema monárquico"], answer: "Sistema de freios e contrapesos" },
+            { question: "Qual foi o primeiro cargo de Antonio Rufino Martins antes de ser eleito prefeito para 2025-2028?", options: ["Vereador", "Secretário de Saúde", "Prefeito em mandatos anteriores", "Deputado Estadual"], answer: "Prefeito em mandatos anteriores" },
+            { question: "A criação do distrito de Cariré em 1911 o subordinava a qual centro urbano maior?", options: ["Fortaleza", "Sobral", "Crateús", "Tianguá"], answer: "Sobral" },
+            // Novas Questões - Bloco 4
+            { question: "A estrutura social inicial de Cariré foi moldada em torno de quais dois edifícios?", options: ["Prefeitura e Fórum", "Mercado e Hospital", "Estação Ferroviária e Igreja de São Francisco", "Escola e Correios"], answer: "Estação Ferroviária e Igreja de São Francisco" },
+            { question: "A 'volatilidade' na história da emancipação de Cariré significa que o processo foi:", options: ["Rápido e sem conflitos", "Lento e gradual", "Instável e com mudanças bruscas", "Planejado desde o início"], answer: "Instável e com mudanças bruscas" },
+            { question: "Qual a principal consequência da chegada da ferrovia para o povoado de Cariré?", options: ["Diminuição da população", "Isolamento da região", "Tornou-se a razão da existência da cidade", "Mudança do nome do local"], answer: "Tornou-se a razão da existência da cidade" },
+            { question: "O que a Lei Orgânica define sobre os Poderes Executivo e Legislativo?", options: ["Sua fusão em um único poder", "Sua estrutura e atribuições", "Sua extinção gradual", "Sua subordinação ao poder judiciário"], answer: "Sua estrutura e atribuições" },
+            { question: "Qual o nome do prefeito que governou Cariré na transição do século XX para o XXI?", options: ["Antônio de Assis Pires", "Francisco Itamar de Sá", "Antônio Rufino Martins", "Elmo Aguiar"], answer: "Francisco Itamar de Sá" },
+            { question: "A predominância de um partido na câmara e na prefeitura é um exemplo de qual fenômeno político?", options: ["Bipartidarismo", "Fragmentação partidária", "Hegemonia política", "Oposição majoritária"], answer: "Hegemonia política" },
+            { question: "Qual o significado do verso 'Para longe de nós o torpor' no hino de Cariré?", options: ["Um desejo de agitação e festa", "Um chamado contra a preguiça e a inércia", "Uma referência ao clima quente", "Uma crítica à política local"], answer: "Um chamado contra a preguiça e a inércia" },
+            { question: "O que são 'planícies fluviais', presentes no relevo de Cariré?", options: ["Montanhas altas perto de rios", "Áreas planas formadas por depósitos de rios", "Cânions escavados por rios", "Cachoeiras de grande volume"], answer: "Áreas planas formadas por depósitos de rios" },
+            { question: "Qual a principal atividade econômica do setor de serviços privados em Cariré?", options: ["Bancos de investimento", "Turismo internacional", "Comércio local", "Desenvolvimento de software"], answer: "Comércio local" },
+            { question: "A visita da imagem do santo padroeiro às residências é uma tradição de qual festa?", options: ["Semana do Município", "Carnaval", "Festa de Santo Antônio", "Natal"], answer: "Festa de Santo Antônio" },
+            { question: "Qual dos seguintes prefeitos teve mandatos consecutivos?", options: ["João de Castro Carneiro", "José Veras de Araújo", "Antônio de Assis Pires", "Antônio Rufino Martins"], answer: "Antônio Rufino Martins" },
+            { question: "A economia de Cariré é fortemente influenciada por qual tipo de renda?", options: ["Renda da exportação de tecnologia", "Renda de salários do setor público e benefícios sociais", "Renda do turismo de luxo", "Renda da bolsa de valores"], answer: "Renda de salários do setor público e benefícios sociais" },
+            { question: "Qual o nome do distrito de Cariré que faz fronteira com o município de Mucambo?", options: ["Tapuio", "Arariús", "Cacimbas", "Não há distrito específico na fronteira"], answer: "Tapuio" }, // Inferência geográfica
+            { question: "O que significa o termo 'heráldico' ao se referir ao brasão de armas?", options: ["Relativo a lendas e mitos", "Relativo à ciência e arte de criar brasões", "Relativo a documentos antigos", "Relativo a canções populares"], answer: "Relativo à ciência e arte de criar brasões" },
+            { question: "A expressão 'ardente sertão nordestino' no hino de Cariré é uma figura de linguagem que enfatiza:", options: ["A falta de cultura do povo", "O calor e a paisagem do semiárido", "A violência da região", "A ausência de rios"], answer: "O calor e a paisagem do semiárido" },
+            { question: "Qual a principal implicação de um IDHM 'médio' para um município?", options: ["Que todos os problemas sociais foram resolvidos", "Que há desafios a serem superados em renda, saúde e educação", "Que o município é um dos mais ricos do estado", "Que a economia é baseada apenas na indústria"], answer: "Que há desafios a serem superados em renda, saúde e educação" },
+            { question: "A criação de caprinos é uma atividade econômica adaptada a qual característica de Cariré?", options: ["Seu relevo montanhoso", "Sua proximidade com o mar", "Seu clima semiárido", "Sua densa floresta"], answer: "Seu clima semiárido" },
+            { question: "Qual o número total de mandatos que Antonio Rufino Martins terá completado ao final de 2028?", options: ["Um", "Dois", "Três", "Quatro"], answer: "Três" },
+            { question: "A data de 10 de dezembro de 2012 é significativa para Cariré por quê?", options: ["Restauração do município", "Inauguração da Igreja Matriz", "Promulgação da Lei Orgânica", "Eleição do primeiro prefeito"], answer: "Promulgação da Lei Orgânica" },
+            { question: "Qual a principal matéria-prima do artesanato de Cariré?", options: ["Ouro e prata", "Argila e cerâmica", "Palha e fios de algodão (crochê)", "Madeira de lei"], answer: "Palha e fios de algodão (crochê)" },
+            // Novas Questões - Bloco 5
+            { question: "O que significa o termo 'autonomia municipal' no contexto da história de Cariré?", options: ["Independência total do estado e da união", "Capacidade de autogoverno, com prefeito e câmara próprios", "Permissão para criar sua própria moeda", "Direito de se separar do país"], answer: "Capacidade de autogoverno, com prefeito e câmara próprios" },
+            { question: "A 'Era Vargas', contexto da supressão de Cariré, foi um período de qual tendência política no Brasil?", options: ["Descentralização e federalismo", "Liberalismo econômico extremo", "Centralização do poder no governo federal", "Expansão do poder dos municípios"], answer: "Centralização do poder no governo federal" },
+            { question: "Qual o nome do prefeito que governou Cariré durante a virada do milênio (1997-2004)?", options: ["Antônio de Assis Pires", "Francisco Itamar de Sá", "Antônio Rufino Martins", "Elmo Aguiar"], answer: "Francisco Itamar de Sá" },
+            { question: "Qual a principal função da Secretaria de Infraestrutura e Desenvolvimento Urbano?", options: ["Cuidar da saúde da população", "Organizar as escolas municipais", "Gerenciar obras, limpeza pública e urbanismo", "Promover eventos culturais"], answer: "Gerenciar obras, limpeza pública e urbanismo" },
+            { question: "O que o sistema de 'freios e contrapesos' busca garantir na administração pública?", options: ["Que um poder se sobreponha ao outro", "O equilíbrio e a fiscalização mútua entre os poderes", "A eliminação do poder legislativo", "Que o prefeito tenha poder absoluto"], answer: "O equilíbrio e a fiscalização mútua entre os poderes" },
+            { question: "O que significa o termo 'legislar', uma das funções da Câmara Municipal?", options: ["Executar obras", "Julgar processos", "Criar, alterar e revogar leis", "Comandar a guarda municipal"], answer: "Criar, alterar e revogar leis" },
+            { question: "A economia de Cariré, dependente do setor público, é vulnerável a quê?", options: ["Variações do clima", "Crises fiscais e cortes de gastos governamentais", "Pragas na lavoura de soja", "Flutuações do mercado de ações"], answer: "Crises fiscais e cortes de gastos governamentais" },
+            { question: "O que é o 'valor adicionado' na composição do PIB?", options: ["O lucro total das empresas", "A contribuição de cada setor para a riqueza total, descontando insumos", "O total de impostos arrecadados", "O salário médio dos trabalhadores"], answer: "A contribuição de cada setor para a riqueza total, descontando insumos" },
+            { question: "A festa do padroeiro é um exemplo de qual tipo de patrimônio cultural?", options: ["Patrimônio material", "Patrimônio natural", "Patrimônio imaterial", "Patrimônio arqueológico"], answer: "Patrimônio imaterial" },
+            { question: "Qual o significado de 'fulgurante' no hino de Cariré?", options: ["Apagada", "Triste", "Brilhante, resplandecente", "Esquecida"], answer: "Brilhante, resplandecente" },
+            { question: "Qual o nome do prefeito que governou Cariré por dois mandatos consecutivos na década de 2010?", options: ["Antônio Rufino Martins", "Elmo Aguiar", "Francisco Itamar de Sá", "Antônio de Assis Pires"], answer: "Elmo Aguiar" },
+            { question: "A localização de Cariré na Microrregião de Sobral indica o quê?", options: ["Que é um distrito de Sobral", "Que possui uma forte influência e conexão com Sobral", "Que está em conflito territorial com Sobral", "Que não tem nenhuma relação com Sobral"], answer: "Que possui uma forte influência e conexão com Sobral" },
+            { question: "A vegetação de Cariré é adaptada a um regime de chuvas:", options: ["Constante e bem distribuído", "Concentrado em um curto período e irregular", "Inexistente, com clima de deserto", "Com neve no inverno"], answer: "Concentrado em um curto período e irregular" },
+            { question: "Qual o número total de vereadores eleitos pelo PDT em 2024?", options: ["5", "7", "9", "11"], answer: "9" },
+            { question: "O que o IDHM mede?", options: ["Apenas a riqueza econômica de um lugar", "O nível de felicidade da população", "O progresso social em renda, educação e longevidade", "A qualidade do ar e da água"], answer: "O progresso social em renda, educação e longevidade" },
+            { question: "A 'Semana do Município' é uma celebração de natureza predominantemente:", options: ["Religiosa", "Esportiva", "Cívica", "Gastronômica"], answer: "Cívica" },
+            { question: "Qual a principal diferença entre a Igreja Matriz de Santo Antônio e a Igreja de São Francisco?", options: ["A Matriz é mais antiga", "A de São Francisco é maior", "A Matriz é do século XX e a de São Francisco do século XIX", "Ambas foram construídas na mesma data"], answer: "A Matriz é do século XX e a de São Francisco do século XIX" },
+            { question: "O que significa 'pecuária'?", options: ["O cultivo de plantas", "A criação de animais", "A extração de minerais", "A produção de artesanato"], answer: "A criação de animais" },
+            { question: "A história de Cariré demonstra que a formação de um município pode ser um processo:", options: ["Sempre rápido e pacífico", "Linear e sem retrocessos", "Complexo e sujeito a mudanças políticas", "Dependente apenas da vontade do povo"], answer: "Complexo e sujeito a mudanças políticas" },
+            { question: "O que o termo 'logística de transporte' significava para o Cariré do século XIX?", options: ["Transporte por aplicativos", "Transporte aéreo de cargas", "Armazenamento e movimentação de mercadorias pela ferrovia", "Navegação fluvial pelo Rio Acaraú"], answer: "Armazenamento e movimentação de mercadorias pela ferrovia" }
         ];
 
         const startScreen = document.getElementById('start-screen');
@@ -237,18 +331,22 @@
             
             const optionsContainer = document.getElementById('options-container');
             optionsContainer.innerHTML = '';
+            optionsContainer.classList.remove('options-answered');
             
             const shuffledOptions = shuffleArray([...question.options]);
 
             shuffledOptions.forEach(option => {
-                const optionId = option.replace(/\s+/g, '-').toLowerCase();
                 optionsContainer.innerHTML += `
                     <div>
-                        <input type="radio" name="option" value="${option}" id="${optionId}" class="sr-only">
-                        <label for="${optionId}" class="option-label">${option}</label>
+                        <label class="option-label">${option}</label>
                     </div>
                 `;
             });
+            
+            document.querySelectorAll('.option-label').forEach(label => {
+                label.addEventListener('click', selectAnswer);
+            });
+
             updateProgressBar();
         }
         
@@ -257,18 +355,38 @@
             document.getElementById('progress').style.width = `${progress}%`;
         }
 
-        function handleNextQuestion() {
-            const selectedOption = document.querySelector('input[name="option"]:checked');
-            if (!selectedOption) {
-                alert('Por favor, selecione uma opção.');
+        function selectAnswer(event) {
+            const optionsContainer = document.getElementById('options-container');
+            if (optionsContainer.classList.contains('options-answered')) {
                 return;
             }
+            optionsContainer.classList.add('options-answered');
 
+            const selectedLabel = event.currentTarget;
+            const selectedValue = selectedLabel.textContent;
             const currentQuestion = shuffledQuestions[currentQuestionIndex];
-            userAnswers.push({ question: currentQuestion.question, userAnswer: selectedOption.value, correctAnswer: currentQuestion.answer });
+            const correctAnswer = currentQuestion.answer;
 
-            if (selectedOption.value === currentQuestion.answer) {
+            userAnswers.push({ question: currentQuestion.question, userAnswer: selectedValue, correctAnswer: correctAnswer });
+
+            if (selectedValue === correctAnswer) {
                 score++;
+                selectedLabel.classList.add('correct-answer');
+            } else {
+                selectedLabel.classList.add('wrong-answer');
+                document.querySelectorAll('.option-label').forEach(label => {
+                    if (label.textContent === correctAnswer) {
+                        label.classList.add('correct-answer');
+                    }
+                });
+            }
+        }
+
+        function handleNextQuestion() {
+            const optionsContainer = document.getElementById('options-container');
+            if (!optionsContainer.classList.contains('options-answered') && currentQuestionIndex < shuffledQuestions.length) {
+                alert('Por favor, selecione uma opção.');
+                return;
             }
 
             currentQuestionIndex++;
